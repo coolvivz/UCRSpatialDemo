@@ -1,0 +1,37 @@
+FUNCTION "functions::WEDGE"(lon DOUBLE, lat DOUBLE, r DOUBLE, dir DOUBLE, app DOUBLE )
+       RETURNS geom ST_Geometry
+       LANGUAGE SQLSCRIPT 
+       SQL SECURITY INVOKER AS 
+BEGIN 
+    /*****************************
+        Write your function logic
+    ****************************/
+     DECLARE p ST_Geometry;
+    DECLARE x, y DOUBLE;
+    DECLARE sa, ea, spn, a DOUBLE;
+    DECLARE segments INT;
+    DECLARE wkt CLOB;
+    DECLARE i INT;
+       
+    r := :r*"functions::SCALE3857"(lat);
+    p := ST_GeomFromText('POINT(' || lon || ' ' || lat ||')', 4326).ST_Transform(3857);
+    x := :p.ST_X();
+    y := :p.ST_Y();
+   
+    sa := "functions::DEG2RAD"(:dir - 0.5*:app);
+    ea := "functions::DEG2RAD"(:dir + 0.5*:app);
+    IF :ea < :sa THEN
+        ea := :ea + "functions::DEG2RAD"(360.0);
+    END IF;
+    spn := :ea - :sa;
+    segments := CEIL(:app);
+    
+    wkt := 'Polygon ((' || x || ' ' || y;
+    FOR i IN 0..segments DO
+        a:= sa + i*spn/segments;
+        wkt := :wkt || ',' || (:x + :r*COS(a)) || ' ' || (:y + :r*SIN(a));
+    END FOR;
+    wkt := :wkt || ',' || x ||' ' || y || '))';
+   
+    geom := ST_GeomFromText(:wkt, 3857).ST_Transform(3857);
+END;

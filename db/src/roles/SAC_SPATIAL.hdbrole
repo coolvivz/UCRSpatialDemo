@@ -1,0 +1,13 @@
+{
+  "role": {
+    "name": "roles::SAC_SPATIAL",
+    "schema_privileges": [
+      {
+        "privileges": [
+          "SELECT",
+          "EXECUTE"
+        ]
+      }
+    ]
+  }
+}

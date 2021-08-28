@@ -1,0 +1,10 @@
+FUNCTION "functions::DEG2RAD"(deg DOUBLE )
+    RETURNS rad DOUBLE
+    LANGUAGE SQLSCRIPT 
+    SQL SECURITY INVOKER AS 
+BEGIN 
+    /*****************************
+        Write your function logic
+    ****************************/
+    rad := :deg * 0.017453292519943296;
+END;

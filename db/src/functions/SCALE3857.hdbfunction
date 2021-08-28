@@ -1,0 +1,10 @@
+FUNCTION "functions::SCALE3857"( lat DOUBLE)
+    RETURNS scl DOUBLE 
+    LANGUAGE SQLSCRIPT 
+    SQL SECURITY INVOKER AS 
+BEGIN 
+    /*****************************
+        Write your function logic
+    ****************************/
+    scl := 1.0 / COS("functions::DEG2RAD"(lat)); 
+END;
